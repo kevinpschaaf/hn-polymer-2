@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../node_modules/@polymer/polymer/polymer-element.html">
 <link rel="import" href="../node_modules/@polymer/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="hn-list-item.html">
 
 <dom-module id="hn-list">
   <template strip-whitespace>
@@ -28,54 +29,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin: 0;
       }
 
-      li:first-of-type {
+      hn-list-item:first-of-type {
         padding-top: 0;
       }
 
-      li {
+      hn-list-item {
         display: flex;
         padding: 8px 0;
         border-bottom: var(--separator-border);
         overflow-wrap: break-word;
-      }
-
-      .title {
-        flex: 1;
-        padding-left: 1rem;
-      }
-
-      .title > a {
-        text-decoration: none;
-      }
-
-      .index {
-        font-weight: bold;
-        color: var(--detail-font-color);
-        align-self: center;
-        min-width: 1em;
-        text-align: right;
-      }
-
-      .info, .domain {
-        color: var(--detail-font-color);
-      }
-
-      .domain {
-        padding-left: 4px;
-        word-break: break-all;
-      }
-
-      .info {
-        font-size: var(--detail-font-size);
-        padding-top: 8px;
-      }
-
-      .info > a {
-        color: var(--detail-font-color);
-      }
-
-      .spacer {
-        padding-right: .5em;
       }
 
       .forwardback {
@@ -94,20 +56,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <ul>
       <template is="dom-repeat" items="[[list]]" initial-count="10">
-        <li>
-          <span class="index">[[_computeIndex(pageSize, page, index)]]</span>
-          <div class="title">
-            <a href="[[item.url]]">[[item.title]]</a>
-            <span class="domain">([[item.domain]])</span>
-            <div class="info">
-              [[item.points]] points by
-              <a href="/user/[[item.user]]">[[item.user]]</a>
-              [[item.time_ago]]
-              <span class="spacer">|</span>
-              <a href="/item/[[item.id]]">[[item.comments_count]] comments</a>
-            </div>
-          </div>
-        </li>
+        <hn-list-item item="[[item]]" index="[[_computeIndex(pageSize, page, index)]]"></hn-list-item>
       </template>
     </ul>
 
