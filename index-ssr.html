@@ -1,0 +1,437 @@
+<html><!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+--><head>
+    <meta charset="utf-8">
+    <meta name="generator" content="Polymer Starter Kit">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>Polymer Hacker News</title>
+    <meta name="description" content="Polymer Hacker News">
+
+    <link rel="icon" href="/images/favicon.ico">
+
+    <!-- See https://goo.gl/OOhYW5 -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- See https://goo.gl/qRE0vM -->
+    <meta name="theme-color" content="#283593">
+
+    <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Polymer Hacker News">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="My App">
+
+    <!-- Homescreen icons -->
+    <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
+
+    <!-- Tile icon for Windows 8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="/images/manifest/icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#3f51b5">
+    <meta name="msapplication-tap-highlight" content="no">
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Noto", sans-serif;
+        min-height: 100vh;
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0;
+      }
+
+      nav {
+        background-color: #283593;
+        height: 54px;
+        padding: 16px 0 16px 1em;
+        box-sizing: border-box;
+        white-space: nowrap;
+      }
+
+      nav > a {
+        color: white;
+        display: inline-block;
+        vertical-align: middle;
+        font-weight: 300;
+        letter-spacing: .075em;
+        margin-right: 0.5em;
+        text-decoration: none;
+      }
+
+      .logo {
+        height: 24px;
+        width: 24px;
+        vertical-align: middle;
+        fill: white;
+      }
+
+      @keyframes pulse {
+        0% { transform: scale(1); opacity: 0; }
+        50% { transform: scale(1.2); opacity: 1; }
+      }
+
+      .loading {
+        text-align: center;
+      }
+
+      .loading > * {
+        animation: pulse 1s infinite ease-in-out;
+        will-change: opacity, transform;
+        display: inline-block;
+        padding: 64px;
+      }
+
+      .hn-top .top, .hn-new .new, .hn-ask .ask, .hn-show .show, .hn-jobs .jobs {
+        color: #f5d328;
+      }
+    </style>
+  <script type="module" src="/modules/hn-list.js"></script><template s-s=""><style s-s="0">
+      :host {
+        display: block;
+        box-sizing: border-box;
+        min-height: 100vh;
+        background-color: white;
+        box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14),
+              0 1px 10px 0 rgba(0, 0, 0, 0.12),
+              0 2px 4px -1px rgba(0, 0, 0, 0.4);
+        --detail-font-size: 0.75rem;
+        --detail-font-color: #666;
+        --separator-border: 1px solid #eee;
+      }
+
+      #views > :not(.selectedView) {
+        display: none !important;
+      }
+
+      #views > * {
+        padding: 1rem;
+      }
+
+      .loading {
+        color: var(--detail-font-color);
+      }
+    </style><style s-s="1">
+      :host {
+        display: block;
+      }
+
+      a {
+        color: currentColor;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      hn-list-item:first-of-type {
+        padding-top: 0;
+      }
+
+      hn-list-item {
+        display: flex;
+        padding: 8px 0;
+        border-bottom: var(--separator-border);
+        overflow-wrap: break-word;
+      }
+
+      .forwardback {
+        padding-top: 16px;
+        display: flex;
+      }
+
+      .forwardback > a {
+        text-decoration: none;
+      }
+
+      .forwardback > span {
+        flex: 1;
+        text-align: center;
+      }
+    </style><style s-s="2">
+      :host {
+        display: block;
+      }
+
+      a {
+        pointer: cursor;
+        color: black;
+      }
+
+      .title {
+        flex: 1;
+        padding-left: 1rem;
+      }
+
+      .title > a {
+        text-decoration: none;
+      }
+
+      .index {
+        font-weight: bold;
+        color: var(--detail-font-color);
+        align-self: center;
+        min-width: 1em;
+        text-align: right;
+      }
+
+      .info, .domain {
+        color: var(--detail-font-color);
+      }
+
+      .domain {
+        padding-left: 4px;
+        word-break: break-all;
+      }
+
+      .info {
+        font-size: var(--detail-font-size);
+        padding-top: 8px;
+      }
+
+      .info > a {
+        color: var(--detail-font-color);
+      }
+
+      .spacer {
+        padding-right: .5em;
+      }
+    </style></template></head>
+  <body class="hn-top">
+    <nav>
+      <a href="https://www.polymer-project.org" target="_blank" rel="noopener" title="Polymer Logo">
+        <svg class="logo" viewBox="0 0 24 24">
+          <path d="M19 4h-4L7.11 16.63 4.5 12 9 4H5L.5 12 5 20h4l7.89-12.63L19.5 12 15 20h4l4.5-8z"></path>
+        </svg>
+      </a>
+      <a class="top" href="/top/1">Top</a>
+      <a class="new" href="/new/1">New</a>
+      <a class="ask" href="/ask/1">Ask</a>
+      <a class="show" href="/show/1">Show</a>
+      <a class="jobs" href="/jobs/1">Jobs</a>
+    </nav>
+    <hn-app role="main"><s-r><s-s index="0"></s-s>
+
+    <simple-router :n="0" :t="0"></simple-router>
+    <slot></slot>
+    <div id="views" :n="6" :t="0">
+      <!-- page-size hardcoded to 30, but ideally would be provided by data source -->
+      <hn-list page-size="30" :n="1" :t="0" class="selectedView"><s-r><s-s index="1"></s-s>
+    <ul>
+      
+        <hn-list-item :n="0" :t="1"><s-r><s-s index="2"></s-s>
+    <span class="index"><span text-node="" :n="0" :t="0">1</span></span>
+    <div class="title">
+      <a :n="2" :t="0" href="https://twitter.com/eric01/status/867473461836263424"><span text-node="" :n="1" :t="0">Coroutines are now in Clang trunk, libc++</span></a>
+      <span class="domain"><span text-node="" :n="3" :t="0">(twitter.com)</span></span>
+      <div class="info"><span text-node="" :n="4" :t="0">
+        45 points by
+        </span><a :n="6" :t="0" href="/user/davedx"><span text-node="" :n="5" :t="0">davedx</span></a><span text-node="" :n="7" :t="0">
+        an hour ago
+        </span><span class="spacer">|</span>
+        <a :n="9" :t="0" href="/item/14422159"><span text-node="" :n="8" :t="0">6 comments</span></a>
+      </div>
+    </div></s-r></hn-list-item>
+      
+        <hn-list-item :n="0" :t="1"><s-r><s-s index="2"></s-s>
+    <span class="index"><span text-node="" :n="0" :t="0">2</span></span>
+    <div class="title">
+      <a :n="2" :t="0" href="https://mikecanex.wordpress.com/2012/12/26/1922-why-i-quit-being-so-accommodating/"><span text-node="" :n="1" :t="0">Why I Quit Being So Accommodating (1922)</span></a>
+      <span class="domain"><span text-node="" :n="3" :t="0">(mikecanex.wordpress.com)</span></span>
+      <div class="info"><span text-node="" :n="4" :t="0">
+        575 points by
+        </span><a :n="6" :t="0" href="/user/Tomte"><span text-node="" :n="5" :t="0">Tomte</span></a><span text-node="" :n="7" :t="0">
+        13 hours ago
+        </span><span class="spacer">|</span>
+        <a :n="9" :t="0" href="/item/14418877"><span text-node="" :n="8" :t="0">220 comments</span></a>
+      </div>
+    </div></s-r></hn-list-item>
+      
+        <hn-list-item :n="0" :t="1"><s-r><s-s index="2"></s-s>
+    <span class="index"><span text-node="" :n="0" :t="0">3</span></span>
+    <div class="title">
+      <a :n="2" :t="0" href="https://www.nasa.gov/press-release/a-whole-new-jupiter-first-science-results-from-nasa-s-juno-mission"><span text-node="" :n="1" :t="0">A Whole New Jupiter: First Science Results from NASA’s Juno Mission</span></a>
+      <span class="domain"><span text-node="" :n="3" :t="0">(nasa.gov)</span></span>
+      <div class="info"><span text-node="" :n="4" :t="0">
+        35 points by
+        </span><a :n="6" :t="0" href="/user/rgbrenner"><span text-node="" :n="5" :t="0">rgbrenner</span></a><span text-node="" :n="7" :t="0">
+        3 hours ago
+        </span><span class="spacer">|</span>
+        <a :n="9" :t="0" href="/item/14421811"><span text-node="" :n="8" :t="0">0 comments</span></a>
+      </div>
+    </div></s-r></hn-list-item>
+      
+        <hn-list-item :n="0" :t="1"><s-r><s-s index="2"></s-s>
+    <span class="index"><span text-node="" :n="0" :t="0">4</span></span>
+    <div class="title">
+      <a :n="2" :t="0" href="https://github.com/tonybeltramelli/pix2code"><span text-node="" :n="1" :t="0">Pix2code: Generating Code from a Graphical User Interface Screenshot</span></a>
+      <span class="domain"><span text-node="" :n="3" :t="0">(github.com)</span></span>
+      <div class="info"><span text-node="" :n="4" :t="0">
+        109 points by
+        </span><a :n="6" :t="0" href="/user/visarga"><span text-node="" :n="5" :t="0">visarga</span></a><span text-node="" :n="7" :t="0">
+        19 hours ago
+        </span><span class="spacer">|</span>
+        <a :n="9" :t="0" href="/item/14416530"><span text-node="" :n="8" :t="0">23 comments</span></a>
+      </div>
+    </div></s-r></hn-list-item>
+      
+        <hn-list-item :n="0" :t="1"><s-r><s-s index="2"></s-s>
+    <span class="index"><span text-node="" :n="0" :t="0">5</span></span>
+    <div class="title">
+      <a :n="2" :t="0" href="https://chadaustin.me/2017/05/writing-a-really-really-fast-json-parser/"><span text-node="" :n="1" :t="0">Writing a Fast JSON Parser</span></a>
+      <span class="domain"><span text-node="" :n="3" :t="0">(chadaustin.me)</span></span>
+      <div class="info"><span text-node="" :n="4" :t="0">
+        115 points by
+        </span><a :n="6" :t="0" href="/user/jsheard"><span text-node="" :n="5" :t="0">jsheard</span></a><span text-node="" :n="7" :t="0">
+        6 hours ago
+        </span><span class="spacer">|</span>
+        <a :n="9" :t="0" href="/item/14421215"><span text-node="" :n="8" :t="0">17 comments</span></a>
+      </div>
+    </div></s-r></hn-list-item>
+      
+        <hn-list-item :n="0" :t="1"><s-r><s-s index="2"></s-s>
+    <span class="index"><span text-node="" :n="0" :t="0">6</span></span>
+    <div class="title">
+      <a :n="2" :t="0" href="https://devuan.org/os/debian-fork/stable-jessie-announce-052517"><span text-node="" :n="1" :t="0">Devuan Jessie 1.0.0 stable release (LTS)</span></a>
+      <span class="domain"><span text-node="" :n="3" :t="0">(devuan.org)</span></span>
+      <div class="info"><span text-node="" :n="4" :t="0">
+        17 points by
+        </span><a :n="6" :t="0" href="/user/walterbell"><span text-node="" :n="5" :t="0">walterbell</span></a><span text-node="" :n="7" :t="0">
+        3 hours ago
+        </span><span class="spacer">|</span>
+        <a :n="9" :t="0" href="/item/14421886"><span text-node="" :n="8" :t="0">2 comments</span></a>
+      </div>
+    </div></s-r></hn-list-item>
+      
+        <hn-list-item :n="0" :t="1"><s-r><s-s index="2"></s-s>
+    <span class="index"><span text-node="" :n="0" :t="0">7</span></span>
+    <div class="title">
+      <a :n="2" :t="0" href="https://github.com/datproject/docs/blob/master/papers/dat-paper.md"><span text-node="" :n="1" :t="0">Dat – Distributed Dataset Synchronization and Versioning</span></a>
+      <span class="domain"><span text-node="" :n="3" :t="0">(github.com)</span></span>
+      <div class="info"><span text-node="" :n="4" :t="0">
+        154 points by
+        </span><a :n="6" :t="0" href="/user/ColinWright"><span text-node="" :n="5" :t="0">ColinWright</span></a><span text-node="" :n="7" :t="0">
+        10 hours ago
+        </span><span class="spacer">|</span>
+        <a :n="9" :t="0" href="/item/14420084"><span text-node="" :n="8" :t="0">19 comments</span></a>
+      </div>
+    </div></s-r></hn-list-item>
+      
+        <hn-list-item :n="0" :t="1"><s-r><s-s index="2"></s-s>
+    <span class="index"><span text-node="" :n="0" :t="0">8</span></span>
+    <div class="title">
+      <a :n="2" :t="0" href="https://a16z.com/2017/05/24/on-firing-why-when-how/"><span text-node="" :n="1" :t="0">It's Never Too Early to Fire</span></a>
+      <span class="domain"><span text-node="" :n="3" :t="0">(a16z.com)</span></span>
+      <div class="info"><span text-node="" :n="4" :t="0">
+        51 points by
+        </span><a :n="6" :t="0" href="/user/jbyers"><span text-node="" :n="5" :t="0">jbyers</span></a><span text-node="" :n="7" :t="0">
+        5 hours ago
+        </span><span class="spacer">|</span>
+        <a :n="9" :t="0" href="/item/14421527"><span text-node="" :n="8" :t="0">30 comments</span></a>
+      </div>
+    </div></s-r></hn-list-item>
+      
+        <hn-list-item :n="0" :t="1"><s-r><s-s index="2"></s-s>
+    <span class="index"><span text-node="" :n="0" :t="0">9</span></span>
+    <div class="title">
+      <a :n="2" :t="0" href="item?id=14417758"><span text-node="" :n="1" :t="0">Ask HN: I don't want to be a founder anymore</span></a>
+      <span class="domain"><span text-node="" :n="3" :t="0">()</span></span>
+      <div class="info"><span text-node="" :n="4" :t="0">
+        335 points by
+        </span><a :n="6" :t="0" href="/user/throwaway10595"><span text-node="" :n="5" :t="0">throwaway10595</span></a><span text-node="" :n="7" :t="0">
+        15 hours ago
+        </span><span class="spacer">|</span>
+        <a :n="9" :t="0" href="/item/14417758"><span text-node="" :n="8" :t="0">295 comments</span></a>
+      </div>
+    </div></s-r></hn-list-item>
+      
+        <hn-list-item :n="0" :t="1"><s-r><s-s index="2"></s-s>
+    <span class="index"><span text-node="" :n="0" :t="0">10</span></span>
+    <div class="title">
+      <a :n="2" :t="0" href="https://www.twilio.com/blog/2017/05/introducing-twilio-functions.html"><span text-node="" :n="1" :t="0">Twilio Functions – Public Beta</span></a>
+      <span class="domain"><span text-node="" :n="3" :t="0">(twilio.com)</span></span>
+      <div class="info"><span text-node="" :n="4" :t="0">
+        209 points by
+        </span><a :n="6" :t="0" href="/user/tcsf"><span text-node="" :n="5" :t="0">tcsf</span></a><span text-node="" :n="7" :t="0">
+        11 hours ago
+        </span><span class="spacer">|</span>
+        <a :n="9" :t="0" href="/item/14419353"><span text-node="" :n="8" :t="0">76 comments</span></a>
+      </div>
+    </div></s-r></hn-list-item>
+      <dom-repeat initial-count="10" :n="1" :t="0"><template :tid="1" :n="0" :t="0"></template></dom-repeat>
+    </ul>
+
+    <div class="forwardback">
+      <a class="prev" aria-label="Previous Page" :n="2" :t="0" href="/top/1">◀ Previous</a>
+      <span><span text-node="" :n="3" :t="0">Page 1</span></span>
+      <a class="next" aria-label="Next Page" :n="4" :t="0" href="/top/2">Next ▶</a>
+    </div></s-r>
+      </hn-list>
+      <hn-item :n="2" :t="0" class="">
+      </hn-item>
+      <hn-user :n="3" :t="0" class="">
+      </hn-user>
+      <hn-404 :n="4" :t="0" class="">
+      </hn-404>
+      <hn-offline :n="5" :t="0" class="">
+      </hn-offline>
+    </div>
+
+    <div class="loading" :n="7" :t="0" hidden="">
+      <slot name="load"></slot>
+    </div></s-r>
+      <div slot="load" class="loading">
+        <div>• • •</div>
+      </div>
+    </hn-app>
+
+    <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+    <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+
+    <!-- Load your application shell -->
+    <script type="module" src="/modules/hn-app.js"></script>
+
+    <!-- Load and register pre-caching Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/service-worker.js');
+        });
+      }
+    </script>
+  
+
+<script>(function () {
+    let t = document.querySelector('template[s-s]');
+    let shadowStyles = t && t.content.children;
+    let shadowRoots = document.querySelectorAll('s-r');
+    for (let i=0; i<shadowRoots.length; i++) {
+      let sr = shadowRoots[i];
+      let parent = sr.parentNode;
+      if (parent) {
+        let shadowRoot = parent.attachShadow({mode:'open'});
+        let child;
+        while ((child = sr.firstChild)) {
+          if (child.localName == 's-s') {
+            child.remove();
+            child = shadowStyles[child.getAttribute('index')].cloneNode(true);
+          }
+          shadowRoot.appendChild(child);
+        }
+        parent.removeChild(sr);
+      }
+    }
+    document.body.hidden = false;
+  })()</script></body></html>
